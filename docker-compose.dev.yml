@@ -1,0 +1,40 @@
+version: "3"
+services:
+  per4mance:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - 8000:8000
+    env_file:
+      - ./secrets/.env.dev
+    volumes:
+      - .:/workspace
+      - python-packages:/usr/local/lib/python3.9.1/site-packages/
+      - python-bin:/usr/local/bin
+    command: /bin/bash scripts/start-dev.sh
+
+  db:
+    image: postgres:13-alpine
+    env_file:
+      - ./secrets/.env.dev
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    ports:
+      - 5124:5432
+    networks:
+      - db_network
+    environment:
+      - POSTGRES_DB=per4mance
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+
+networks:
+  db_network:
+    driver: bridge
+  
+volumes:
+  python-packages:
+  python-bin:
+  db-volume:
