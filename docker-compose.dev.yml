@@ -12,7 +12,10 @@ services:
       - .:/workspace
       - python-packages:/usr/local/lib/python3.9.1/site-packages/
       - python-bin:/usr/local/bin
-    command: /bin/bash scripts/start-dev.sh
+    networks:
+      - db_network
+    depends_on:
+      - db
 
   db:
     image: postgres:13-alpine
