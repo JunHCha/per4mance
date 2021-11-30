@@ -45,11 +45,12 @@ class Course(Base):
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     evaluator = sa.Column(UUID, sa.ForeignKey("user.id"))
-    survey_config = sa.Column(sa.INT, sa.ForeignKey("survey_config.id"), nullable=True)
     name = sa.Column(sa.String(50))
     start_term = sa.Column(sa.TIMESTAMP(timezone=True))
     end_term = sa.Column(sa.TIMESTAMP(timezone=True))
     description = sa.Column(sa.TEXT)
+    survey_count = sa.Column(sa.Integer)
+    scale_factor = sa.Column(sa.FLOAT)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True))
     updated_at = sa.Column(sa.TIMESTAMP(timezone=True))
 
@@ -61,7 +62,6 @@ class Survey(Base):
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
-    survey_config = sa.Column(sa.INT, sa.ForeignKey("survey_config.id"))
     completeness = sa.Column(sa.FLOAT)
     name = sa.Column(sa.String(50))
     start_term = sa.Column(sa.TIMESTAMP(timezone=True))
@@ -69,15 +69,6 @@ class Survey(Base):
     class_notes = sa.Column(sa.TEXT)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True))
     updated_at = sa.Column(sa.TIMESTAMP(timezone=True))
-
-
-class SurveyConfig(Base):
-    __tablename__ = "survey_config"
-
-    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
-    course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
-    survey_count = sa.Column(sa.INT)
-    scale_factor = sa.Column(sa.FLOAT)
 
 
 class GroupSurveyReport(Base):

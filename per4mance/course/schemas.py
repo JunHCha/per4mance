@@ -8,3 +8,5 @@ class CoursePostSchema(BaseModel):
     start_term: datetime.date
     end_term: datetime.date
     description: str = ""
+    survey_count: int = 4
+    scale_factor: float = 0.2

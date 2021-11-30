@@ -37,6 +37,8 @@ async def create_course(course_info: CoursePostSchema, user: User) -> None:
         start_term=course_info.start_term,
         end_term=course_info.end_term,
         description=course_info.description,
+        survey_count=course_info.survey_count,
+        scale_factor=course_info.scale_factor,
         created_at=now,
         updated_at=now,
     )
@@ -49,11 +51,12 @@ async def create_course(course_info: CoursePostSchema, user: User) -> None:
             [
                 Course.id,
                 Course.evaluator,
-                Course.survey_config,
                 Course.name,
                 Course.start_term,
                 Course.end_term,
                 Course.description,
+                Course.survey_count,
+                Course.scale_factor,
             ]
         ).where(Course.evaluator == user.id and Course.name == course_info.name)
     )[0]
