@@ -43,7 +43,7 @@ async def refresh_token(signin_form: SignIn):
             User.account,
             User.password,
         ]
-    ).where(User.account == signin_form.account)
+    ).where(User.account == signin_form.username)
 
     user = fetch_all(query)[0]
     if len(user) == 0:
@@ -51,7 +51,7 @@ async def refresh_token(signin_form: SignIn):
 
     is_verified = user["password"] == fakehash(signin_form.password)
     if is_verified:
-        token = token_fake_encoder(signin_form.account, signin_form.password)
+        token = token_fake_encoder(signin_form.username, signin_form.password)
         return token
     else:
         raise HTTPException(status_code=401, detail="wrong password")
