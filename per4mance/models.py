@@ -1,9 +1,11 @@
-from sqlalchemy.ext.declarative import declarative_base
+import uuid
+from typing import Any
+
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
+from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+Base: Any = declarative_base()
 
 
 class User(Base):
@@ -43,13 +45,15 @@ class Course(Base):
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     evaluator = sa.Column(UUID, sa.ForeignKey("user.id"))
-    survey_config = sa.Column(sa.INT, sa.ForeignKey("survey_config.id"))
+    survey_config = sa.Column(sa.INT, sa.ForeignKey("survey_config.id"), nullable=True)
     name = sa.Column(sa.String(50))
     start_term = sa.Column(sa.TIMESTAMP(timezone=True))
     end_term = sa.Column(sa.TIMESTAMP(timezone=True))
     description = sa.Column(sa.TEXT)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True))
     updated_at = sa.Column(sa.TIMESTAMP(timezone=True))
+
+    __table_args__ = (sa.UniqueConstraint("evaluator", "name", name="course_unique"),)
 
 
 class Survey(Base):
@@ -96,13 +100,13 @@ class IndividualScore(Base):
     group_survey_report = sa.Column(sa.INT, sa.ForeignKey("group_survey_report.id"))
     owner = sa.Column(UUID, sa.ForeignKey("user.id"))
 
-    score_qlt_individual: sa.Column(sa.FLOAT)
-    score_qnt_individual: sa.Column(sa.FLOAT)
-    score_qlt_team: sa.Column(sa.FLOAT)
-    score_qnt_team: sa.Column(sa.FLOAT)
+    score_qlt_individual = sa.Column(sa.FLOAT)
+    score_qnt_individual = sa.Column(sa.FLOAT)
+    score_qlt_team = sa.Column(sa.FLOAT)
+    score_qnt_team = sa.Column(sa.FLOAT)
 
-    score_ability: sa.Column(sa.FLOAT)
-    score_effort: sa.Column(sa.FLOAT)
-    score_significant: sa.Column(sa.FLOAT)
-    score_attitude: sa.Column(sa.FLOAT)
-    iwf: sa.Column(sa.FLOAT)
+    score_ability = sa.Column(sa.FLOAT)
+    score_effort = sa.Column(sa.FLOAT)
+    score_significant = sa.Column(sa.FLOAT)
+    score_attitude = sa.Column(sa.FLOAT)
+    iwf = sa.Column(sa.FLOAT)

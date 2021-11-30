@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy import create_engine
-from per4mance.config import ROOT_PATH, DB_URL
+from sqlalchemy.orm.session import sessionmaker
 
+from per4mance.config import DB_URL, ROOT_PATH
 
 db_engine = create_engine(DB_URL, future=True, echo=True)
 db_session = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)

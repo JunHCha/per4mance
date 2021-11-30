@@ -6,8 +6,3 @@ class SignUp(BaseModel):
     account: str
     password: str
     is_evaluator: bool
-
-
-class SignIn(BaseModel):
-    account: str
-    password: str
