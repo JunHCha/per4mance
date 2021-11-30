@@ -10,10 +10,13 @@ from per4mance.course.schemas import CoursePostSchema
 from per4mance.models import Course, User
 
 
-async def fetch_courses(user: User) -> None:
+async def fetch_courses(limit: int, offset: int, user: User) -> None:
     if user.is_evaluator:
-        query = sa.select([col for col in Course.__table__.columns]).where(
-            Course.evaluator == user.id
+        query = (
+            sa.select([col for col in Course.__table__.columns])
+            .where(Course.evaluator == user.id)
+            .limit(limit)
+            .offset(offset)
         )
     else:
         # query for students

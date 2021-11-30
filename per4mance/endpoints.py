@@ -1,5 +1,6 @@
-from fastapi import Path
-from fastapi.param_functions import Depends
+from typing import Optional
+
+from fastapi.param_functions import Depends, Path, Query
 from fastapi.routing import APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
@@ -30,8 +31,12 @@ async def login(signin_form: OAuth2PasswordRequestForm = Depends()) -> JSONRespo
 
 
 @router.get("/course")
-async def get_courses(user: User = Depends(get_current_user)) -> JSONResponse:
-    courses = await fetch_courses(user=user)
+async def get_courses(
+    limit: Optional[int] = Query(10, ge=1),
+    offset: Optional[int] = Query(0, ge=0),
+    user: User = Depends(get_current_user),
+) -> JSONResponse:
+    courses = await fetch_courses(limit, offset, user=user)
     return JSONResponse(status_code=200, content=dict(data=courses))
 
 
