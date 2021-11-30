@@ -9,6 +9,20 @@ from per4mance.course.schemas import CoursePostSchema
 from per4mance.models import Course, User
 
 
+async def fetch_courses(user: User) -> None:
+    if user.is_evaluator:
+        query = sa.select([col for col in Course.__table__.columns]).where(
+            Course.evaluator == user.id
+        )
+    else:
+        # query for students
+        query = None
+        pass
+
+    courses = fetch_all(query)
+    return courses
+
+
 async def create_course(course_info: CoursePostSchema, user: User) -> None:
     if not user.is_evaluator:
         raise HTTPException(status_code=401, detail="only evaluator can open course.")
@@ -60,6 +74,4 @@ async def create_course(course_info: CoursePostSchema, user: User) -> None:
             ]
         ).where(Course.evaluator == user.id and Course.name == course_info.name)
     )[0]
-    course["start_term"] = course["start_term"].strftime("%Y-%m-%d")
-    course["end_term"] = course["end_term"].strftime("%Y-%m-%d")
     return course

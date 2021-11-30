@@ -4,7 +4,7 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 
 from per4mance.course.schemas import CoursePostSchema
-from per4mance.course.services import create_course
+from per4mance.course.services import create_course, fetch_courses
 from per4mance.models import User
 from per4mance.user.auth import get_current_user
 from per4mance.user.schemas import SignUp
@@ -28,9 +28,15 @@ async def login(signin_form: OAuth2PasswordRequestForm = Depends()) -> JSONRespo
     )
 
 
+@router.get("/course")
+async def get_courses(user: User = Depends(get_current_user)) -> JSONResponse:
+    courses = await fetch_courses(user=user)
+    return JSONResponse(status_code=200, content=dict(data=courses))
+
+
 @router.post("/course")
 async def open_course(
     course_form: CoursePostSchema, evaluator: User = Depends(get_current_user)
 ) -> JSONResponse:
     course = await create_course(course_info=course_form, user=evaluator)
-    return JSONResponse(status_code=201, content=dict(message="success", course=course))
+    return JSONResponse(status_code=201, content=dict(course=course))
