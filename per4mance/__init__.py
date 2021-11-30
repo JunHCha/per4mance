@@ -9,9 +9,13 @@ db_session = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
 
 
 def init_views(app: FastAPI) -> None:
+    from per4mance import endpoints
+
     @app.get("/ping")
     async def ping() -> str:
         return "pong"
+
+    app.include_router(endpoints.router)
 
 
 def create_app() -> FastAPI:

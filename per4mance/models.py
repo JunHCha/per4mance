@@ -1,6 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 Base = declarative_base()
 
@@ -8,20 +9,20 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "user"
 
-    id = sa.Column(UUID, primary_key=True)
+    id = sa.Column(UUID, primary_key=True, default=str(uuid.uuid4()))
     name = sa.Column(sa.String(30))
-    company = sa.Column(sa.String(30))
-    account = sa.Column(sa.String(200))
+    company = sa.Column(sa.String(30), default="")
+    account = sa.Column(sa.String(200), unique=True)
     password = sa.Column(sa.String(200))
-    email_address = sa.Column(sa.String(200))
-    is_evaluator = sa.Column(sa.BOOLEAN)
+    email_address = sa.Column(sa.String(200), default="")
+    is_evaluator = sa.Column(sa.BOOLEAN, default=False)
     created_at = sa.Column(sa.TIMESTAMP(timezone=True))
 
 
 class Group(Base):
     __tablename__ = "group"
 
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     course = sa.Column(sa.Integer, sa.ForeignKey("course.id"))
     member = sa.orm.relationship("GroupXUser")
     name = sa.Column(sa.String(50))
@@ -32,7 +33,7 @@ class Group(Base):
 
 class GroupXUser(Base):
     __tablename__ = "groupxuser"
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     group = sa.Column(sa.INT, sa.ForeignKey("group.id"))
     member = sa.Column(UUID, sa.ForeignKey("user.id"))
 
@@ -40,7 +41,7 @@ class GroupXUser(Base):
 class Course(Base):
     __tablename__ = "course"
 
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     evaluator = sa.Column(UUID, sa.ForeignKey("user.id"))
     survey_config = sa.Column(sa.INT, sa.ForeignKey("survey_config.id"))
     name = sa.Column(sa.String(50))
@@ -54,7 +55,7 @@ class Course(Base):
 class Survey(Base):
     __tablename__ = "survey"
 
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
     survey_config = sa.Column(sa.INT, sa.ForeignKey("survey_config.id"))
     completeness = sa.Column(sa.FLOAT)
@@ -69,7 +70,7 @@ class Survey(Base):
 class SurveyConfig(Base):
     __tablename__ = "survey_config"
 
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
     survey_count = sa.Column(sa.INT)
     scale_factor = sa.Column(sa.FLOAT)
@@ -78,7 +79,7 @@ class SurveyConfig(Base):
 class GroupSurveyReport(Base):
     __tablename__ = "group_survey_report"
 
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     survey = sa.Column(sa.INT, sa.ForeignKey("survey.id"))
     group = sa.Column(sa.INT, sa.ForeignKey("group.id"))
     completeness = sa.Column(sa.FLOAT)
@@ -91,7 +92,7 @@ class GroupSurveyReport(Base):
 class IndividualScore(Base):
     __tablename__ = "individual_score"
 
-    id = sa.Column(sa.INT, primary_key=True)
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     group_survey_report = sa.Column(sa.INT, sa.ForeignKey("group_survey_report.id"))
     owner = sa.Column(UUID, sa.ForeignKey("user.id"))
 
