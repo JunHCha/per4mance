@@ -1,10 +1,11 @@
+from fastapi import Path
 from fastapi.param_functions import Depends
 from fastapi.routing import APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 
 from per4mance.course.schemas import CoursePostSchema
-from per4mance.course.services import create_course, fetch_courses
+from per4mance.course.services import create_course, delete_course, fetch_courses
 from per4mance.models import User
 from per4mance.user.auth import get_current_user
 from per4mance.user.schemas import SignUp
@@ -40,3 +41,12 @@ async def open_course(
 ) -> JSONResponse:
     course = await create_course(course_info=course_form, user=evaluator)
     return JSONResponse(status_code=201, content=dict(course=course))
+
+
+@router.delete("/course/{course_id}")
+async def close_course(
+    course_id: int = Path(1, description="Course id to close", ge=1),
+    evaluator: User = Depends(get_current_user),
+) -> JSONResponse:
+    await delete_course(course_id, evaluator)
+    return JSONResponse(status_code=200, content=dict(message="success"))

@@ -1,4 +1,5 @@
 import datetime
+from typing import Any, Dict, List
 
 import sqlalchemy as sa
 from fastapi.exceptions import HTTPException
@@ -23,7 +24,9 @@ async def fetch_courses(user: User) -> None:
     return courses
 
 
-async def create_course(course_info: CoursePostSchema, user: User) -> None:
+async def create_course(
+    course_info: CoursePostSchema, user: User
+) -> List[Dict[str, Any]]:
     if not user.is_evaluator:
         raise HTTPException(status_code=401, detail="only evaluator can open course.")
     if course_info.end_term < course_info.start_term:
@@ -35,7 +38,7 @@ async def create_course(course_info: CoursePostSchema, user: User) -> None:
         len(
             fetch_all(
                 sa.select([Course.id]).where(
-                    Course.name == course_info.name and Course.evaluator == user.id
+                    (Course.name == course_info.name) & (Course.evaluator == user.id)
                 )
             )
         )
@@ -61,17 +64,28 @@ async def create_course(course_info: CoursePostSchema, user: User) -> None:
         conn.commit()
 
     course = fetch_all(
-        sa.select(
-            [
-                Course.id,
-                Course.evaluator,
-                Course.name,
-                Course.start_term,
-                Course.end_term,
-                Course.description,
-                Course.survey_count,
-                Course.scale_factor,
-            ]
-        ).where(Course.evaluator == user.id and Course.name == course_info.name)
+        sa.select([col for col in Course.__table__.columns]).where(
+            (Course.evaluator == user.id) & (Course.name == course_info.name)
+        )
     )[0]
     return course
+
+
+async def delete_course(course_id: int, user: User) -> None:
+    if not user.is_evaluator:
+        raise HTTPException(status_code=401, detail="only evaluator can open course.")
+
+    target = fetch_all(
+        sa.select([Course.id, Course.evaluator]).where(Course.id == course_id)
+    )
+    if len(target) == 0:
+        raise HTTPException(status_code=404, detail="course not found")
+    if target[0]["evaluator"] != user.id:
+        raise HTTPException(
+            status_code=401, detail="'cannot delete other users' course"
+        )
+
+    query = sa.delete(Course).where(Course.id == course_id)
+    with db_engine.connect() as conn:
+        conn.execute(query)
+        conn.commit()
