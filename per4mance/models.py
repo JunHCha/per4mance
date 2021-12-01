@@ -39,6 +39,8 @@ class GroupXUser(Base):
     group = sa.Column(sa.INT, sa.ForeignKey("group.id"))
     member = sa.Column(UUID, sa.ForeignKey("user.id"))
 
+    __table_args__ = (sa.UniqueConstraint("group", "member", name="groupxuser_unique"),)
+
 
 class Course(Base):
     __tablename__ = "course"
@@ -64,6 +66,10 @@ class CourseXStudent(Base):
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
     student = sa.Column(UUID, sa.ForeignKey("user.id"))
+
+    __table_args__ = (
+        sa.UniqueConstraint("course", "student", name="coursexstudent_unique"),
+    )
 
 
 class Survey(Base):
