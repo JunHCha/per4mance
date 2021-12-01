@@ -7,7 +7,7 @@ from fastapi.exceptions import HTTPException
 from per4mance import db_engine
 from per4mance.core.utils import fetch_all
 from per4mance.course.schemas import CoursePostSchema
-from per4mance.models import Course, User
+from per4mance.models import Course, CourseXStudent, User
 
 
 async def fetch_courses(limit: int, offset: int, user: User) -> None:
@@ -19,8 +19,15 @@ async def fetch_courses(limit: int, offset: int, user: User) -> None:
             .offset(offset)
         )
     else:
-        # query for students
-        query = None
+        course_query = sa.select([CourseXStudent.course]).where(
+            CourseXStudent.student == user.id
+        )
+        query = (
+            sa.select([col for col in Course.__table__.columns])
+            .where(Course.id.in_(course_query.as_scalar()))
+            .limit(limit)
+            .offset(offset)
+        )
         pass
 
     courses = fetch_all(query)

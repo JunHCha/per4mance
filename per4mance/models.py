@@ -45,6 +45,7 @@ class Course(Base):
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     evaluator = sa.Column(UUID, sa.ForeignKey("user.id"))
+    students = sa.orm.relationship("CourseXStudent")
     name = sa.Column(sa.String(50))
     start_term = sa.Column(sa.TIMESTAMP(timezone=True))
     end_term = sa.Column(sa.TIMESTAMP(timezone=True))
@@ -55,6 +56,14 @@ class Course(Base):
     updated_at = sa.Column(sa.TIMESTAMP(timezone=True))
 
     __table_args__ = (sa.UniqueConstraint("evaluator", "name", name="course_unique"),)
+
+
+class CourseXStudent(Base):
+    __tablename__ = "coursexstudent"
+
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
+    course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
+    student = sa.Column(UUID, sa.ForeignKey("user.id"))
 
 
 class Survey(Base):
