@@ -1,8 +1,6 @@
-import uuid
 from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
 Base: Any = declarative_base()
@@ -11,7 +9,7 @@ Base: Any = declarative_base()
 class User(Base):
     __tablename__ = "user"
 
-    id = sa.Column(UUID, primary_key=True, default=str(uuid.uuid4()))
+    id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String(30))
     company = sa.Column(sa.String(30), default="")
     account = sa.Column(sa.String(200), unique=True)
@@ -37,7 +35,7 @@ class GroupXUser(Base):
     __tablename__ = "groupxuser"
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     group = sa.Column(sa.INT, sa.ForeignKey("group.id"))
-    member = sa.Column(UUID, sa.ForeignKey("user.id"))
+    member = sa.Column(sa.INT, sa.ForeignKey("user.id"))
 
     __table_args__ = (sa.UniqueConstraint("group", "member", name="groupxuser_unique"),)
 
@@ -46,7 +44,7 @@ class Course(Base):
     __tablename__ = "course"
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
-    evaluator = sa.Column(UUID, sa.ForeignKey("user.id"))
+    evaluator = sa.Column(sa.INT, sa.ForeignKey("user.id"))
     students = sa.orm.relationship("CourseXStudent")
     name = sa.Column(sa.String(50))
     start_term = sa.Column(sa.TIMESTAMP(timezone=True))
@@ -65,7 +63,7 @@ class CourseXStudent(Base):
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     course = sa.Column(sa.INT, sa.ForeignKey("course.id"))
-    student = sa.Column(UUID, sa.ForeignKey("user.id"))
+    student = sa.Column(sa.INT, sa.ForeignKey("user.id"))
 
     __table_args__ = (
         sa.UniqueConstraint("course", "student", name="coursexstudent_unique"),
@@ -104,7 +102,7 @@ class IndividualScore(Base):
 
     id = sa.Column(sa.INT, primary_key=True, autoincrement=True)
     group_survey_report = sa.Column(sa.INT, sa.ForeignKey("group_survey_report.id"))
-    owner = sa.Column(UUID, sa.ForeignKey("user.id"))
+    owner = sa.Column(sa.INT, sa.ForeignKey("user.id"))
 
     score_qlt_individual = sa.Column(sa.FLOAT)
     score_qnt_individual = sa.Column(sa.FLOAT)

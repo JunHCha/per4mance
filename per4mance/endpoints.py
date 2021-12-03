@@ -1,5 +1,4 @@
 from typing import Optional
-from uuid import UUID
 
 from fastapi.param_functions import Depends, Path, Query
 from fastapi.routing import APIRouter
@@ -98,13 +97,11 @@ async def close_course(
 @router.post("/course/{course_id}/users/{user_id}")
 async def add_student_to_course(
     course_id: int = Path(1, description="Course id to add student", ge=1),
-    student_id: UUID = Path(
-        "85359937-abcf-4a58-aed2-e2a0af892bc0", description="Student's user id to add"
-    ),
+    user_id: int = Path(1, description="Student's user id to add", ge=1),
     evaluator: User = Depends(get_current_user),
 ) -> JSONResponse:
     """
     Enroll student to course. Only owner of the course can add students.
     """
-    course, student = await create_coursexuser(course_id, student_id, evaluator)
-    return JSONResponse(status_code=201, contetn=dict(course=course, student=student))
+    course, student = await create_coursexuser(course_id, user_id, evaluator)
+    return JSONResponse(status_code=201, content=dict(course=course, student=student))

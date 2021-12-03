@@ -1,6 +1,5 @@
 import datetime
 from typing import Any, Dict, List, Tuple
-from uuid import UUID
 
 import sqlalchemy as sa
 from fastapi.exceptions import HTTPException
@@ -29,7 +28,6 @@ async def fetch_courses(limit: int, offset: int, user: User) -> None:
             .limit(limit)
             .offset(offset)
         )
-        pass
 
     courses = fetch_all(query)
     return courses
@@ -152,7 +150,7 @@ async def delete_course(course_id: int, user: User) -> None:
 
 
 async def create_coursexuser(
-    course_id: int, student_id: UUID, user: User
+    course_id: int, student_id: int, user: User
 ) -> Tuple[Any, Any]:
     if not user.is_evaluator:
         raise HTTPException(
