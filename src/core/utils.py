@@ -1,7 +1,7 @@
 import datetime
 from typing import Any, Dict, List
 
-from per4mance import db_engine
+from src import db_engine
 
 
 def fetch_all(query: Any) -> List[Dict[str, Any]]:
