@@ -4,16 +4,16 @@ from fastapi.param_functions import Depends, Path, Query
 from fastapi.routing import APIRouter
 from starlette.responses import JSONResponse
 
-from src.course.schemas import CoursePostSchema
-from src.course.services import (
+from per4mance.course.schemas import CoursePostSchema
+from per4mance.course.services import (
     create_course,
     create_coursexuser,
     delete_course,
     fetch_courses,
     update_course,
 )
-from src.models import User
-from src.core.auth import get_current_user
+from per4mance.models import User
+from per4mance.core.auth import get_current_user
 
 router = APIRouter()
 

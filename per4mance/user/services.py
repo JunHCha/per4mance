@@ -5,11 +5,11 @@ import sqlalchemy as sa
 from fastapi import HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
-from src import db_engine
-from src.core.utils import fetch_all
-from src.models import User
-from src.core.auth import fakehash, token_fake_encoder
-from src.user.schemas import SignUp
+from per4mance import db_engine
+from per4mance.core.utils import fetch_all
+from per4mance.models import User
+from per4mance.core.auth import fakehash, token_fake_encoder
+from per4mance.user.schemas import SignUp
 
 
 async def create_account(signup_form: SignUp) -> Dict[str, str]:

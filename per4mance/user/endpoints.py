@@ -2,8 +2,8 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
 from starlette.responses import JSONResponse
 from fastapi.routing import APIRouter
-from src.user.schemas import SignUp
-from src.user.services import create_account, refresh_token
+from per4mance.user.schemas import SignUp
+from per4mance.user.services import create_account, refresh_token
 
 from fastapi.param_functions import Depends
 
