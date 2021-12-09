@@ -8,7 +8,7 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from per4mance import db_engine
 from per4mance.core.utils import fetch_all
 from per4mance.models import User
-from per4mance.user.auth import fakehash, token_fake_encoder
+from per4mance.core.auth import fakehash, token_fake_encoder
 from per4mance.user.schemas import SignUp
 
 

@@ -12,6 +12,5 @@ RUN pip install --upgrade pip && pip install "poetry>=1.1.7,<2.0.0"
 WORKDIR /workspace
 RUN poetry config virtualenvs.create false
 COPY ./pyproject.toml .
-RUN poetry install --no-dev
 EXPOSE 8000
 CMD ["/bin/bash", "scripts/start-dev.sh"]
