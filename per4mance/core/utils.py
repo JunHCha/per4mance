@@ -4,8 +4,20 @@ from typing import Any, Dict, List
 from per4mance import db_engine
 
 
-def fetch_all(query: Any) -> List[Dict[str, Any]]:
-    data = db_engine.connect().execute(query).all()
+async def fetch_one(query: Any) -> Dict[str, Any]:
+    async with db_engine.connect() as conn:
+        res = await conn.execute(query)
+    data = res.fetchone()
+    columns = [str(col.name) for col in query.columns]
+    values = [value for value in list(data)]
+    data = dict(zip(columns, values))
+    return data
+
+
+async def fetch_all(query: Any) -> List[Dict[str, Any]]:
+    async with db_engine.connect() as conn:
+        res = await conn.execute(query)
+    data = res.fetchall()
     columns = [str(col.name) for col in query.columns]
     listed = [list(each) for each in data]
     values = list()

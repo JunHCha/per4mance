@@ -23,9 +23,9 @@ def token_fake_decoder(token: str) -> str:
     return account
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     account = token_fake_decoder(token)
-    user_dict = fetch_all(
+    user_dict = await fetch_all(
         sa.select([col for col in User.__table__.columns]).where(
             User.account == account
         )

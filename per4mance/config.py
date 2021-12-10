@@ -13,4 +13,4 @@ DB_USER = get_env("DB_USER")
 DB_PASSWORD = get_env("DB_PASSWORD")
 DB_HOST = get_env("DB_HOST")
 DB_NAME = get_env("DB_NAME")
-DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@db/per4mance"
+DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@db/per4mance"
