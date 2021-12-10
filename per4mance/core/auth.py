@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from fastapi.param_functions import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from per4mance.core.utils import fetch_all
+from per4mance.core.utils import fetch_one
 from per4mance.models import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
@@ -25,11 +25,11 @@ def token_fake_decoder(token: str) -> str:
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     account = token_fake_decoder(token)
-    user_dict = await fetch_all(
+    user_dict = await fetch_one(
         sa.select([col for col in User.__table__.columns]).where(
             User.account == account
         )
-    )[0]
+    )
     user = User(
         id=user_dict["id"],
         name=user_dict["name"],
