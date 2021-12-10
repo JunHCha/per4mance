@@ -11,8 +11,10 @@ uvicorn = "^0.15.0"
 SQLAlchemy = "^1.4.27"
 alembic = "^1.7.5"
 python-multipart = "^0.0.5"
-psycopg2 = "^2.9.2"
-postgres = "^4.0"
+asyncpg = "^0.25.0"
+
+[tool.poetry.extras]
+asyncio = ["SQLAlchemy"]
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
