@@ -12,9 +12,13 @@ SQLAlchemy = "^1.4.27"
 alembic = "^1.7.5"
 python-multipart = "^0.0.5"
 asyncpg = "^0.25.0"
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
 
 [tool.poetry.extras]
 asyncio = ["SQLAlchemy"]
+cryptography = ["python-jose"]
+bcrypt = ["passlib"]
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
