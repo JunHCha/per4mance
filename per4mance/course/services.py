@@ -29,7 +29,7 @@ async def fetch_courses(limit: int, offset: int, user: User) -> None:
             .offset(offset)
         )
 
-    courses = fetch_all(query)
+    courses = await fetch_all(query)
     return courses
 
 
@@ -45,7 +45,7 @@ async def create_course(
 
     if (
         len(
-            fetch_all(
+            await fetch_all(
                 sa.select([Course.id]).where(
                     (Course.name == course_info.name) & (Course.evaluator == user.id)
                 )
@@ -72,7 +72,7 @@ async def create_course(
         conn.execute(query)
         conn.commit()
 
-    course = fetch_all(
+    course = await fetch_all(
         sa.select([col for col in Course.__table__.columns]).where(
             (Course.evaluator == user.id) & (Course.name == course_info.name)
         )
@@ -92,7 +92,7 @@ async def update_course(
 
     if (
         len(
-            fetch_all(
+            await fetch_all(
                 sa.select([Course.id]).where(
                     (Course.name == course_info.name) & (Course.evaluator == user.id)
                 )
@@ -121,7 +121,7 @@ async def update_course(
         conn.execute(query)
         conn.commit()
 
-    course = fetch_all(
+    course = await fetch_all(
         sa.select([col for col in Course.__table__.columns]).where(
             (Course.evaluator == user.id) & (Course.name == course_info.name)
         )
@@ -133,7 +133,7 @@ async def delete_course(course_id: int, user: User) -> None:
     if not user.is_evaluator:
         raise HTTPException(status_code=401, detail="only evaluator can delete course.")
 
-    target = fetch_all(
+    target = await fetch_all(
         sa.select([Course.id, Course.evaluator]).where(Course.id == course_id)
     )
     if len(target) == 0:
@@ -157,7 +157,7 @@ async def create_coursexuser(
             status_code=401, detail="only evaluator can manage students"
         )
 
-    course = fetch_all(
+    course = await fetch_all(
         sa.select([col for col in Course.__table__.columns]).where(
             Course.id == course_id
         )
@@ -169,7 +169,7 @@ async def create_coursexuser(
             status_code=401, detail="cannot manage other evaluators' course"
         )
 
-    user = fetch_all(
+    user = await fetch_all(
         sa.select([col for col in User.__table__.columns]).where(User.id == student_id)
     )
     if len(user) == 0:
@@ -179,7 +179,7 @@ async def create_coursexuser(
             status_code=400, detail="cannot add an evaluator as a student"
         )
 
-    coursexuser = fetch_all(
+    coursexuser = await fetch_all(
         sa.select([col for col in CourseXStudent.__table__.columns]).where(
             (CourseXStudent.course == course_id)
             & (CourseXStudent.student == student_id)
