@@ -6,9 +6,9 @@ from fastapi import HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
 from per4mance import db_engine
-from per4mance.core.utils import fetch_all, fetch_one
+from per4mance.core.utils.auth import fakehash, token_fake_encoder
+from per4mance.core.utils.db import fetch_all, fetch_one
 from per4mance.models import User
-from per4mance.core.auth import fakehash, token_fake_encoder
 from per4mance.user.schemas import SignUp
 
 

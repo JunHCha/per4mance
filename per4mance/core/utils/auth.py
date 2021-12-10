@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from fastapi.param_functions import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from per4mance.core.utils import fetch_one
+from per4mance.core.utils.db import fetch_one
 from per4mance.models import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
