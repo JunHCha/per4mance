@@ -8,6 +8,8 @@ async def fetch_one(query: Any) -> Dict[str, Any]:
     async with db_engine.connect() as conn:
         res = await conn.execute(query)
     data = res.fetchone()
+    if data is None:
+        return None
     columns = [str(col.name) for col in query.columns]
     values = [value for value in list(data)]
     data = dict(zip(columns, values))

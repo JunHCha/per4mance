@@ -5,12 +5,12 @@ import sqlalchemy as sa
 from fastapi.exceptions import HTTPException
 
 from per4mance import db_engine
-from per4mance.core.utils import fetch_all
+from per4mance.core.utils.db import fetch_all, fetch_one
 from per4mance.course.schemas import CoursePostSchema
 from per4mance.models import Course, CourseXStudent, User
 
 
-async def fetch_courses(limit: int, offset: int, user: User) -> None:
+async def fetch_courses(limit: int, offset: int, user: User) -> List[Dict[str, Any]]:
     if user.is_evaluator:
         query = (
             sa.select([col for col in Course.__table__.columns])
@@ -33,9 +33,7 @@ async def fetch_courses(limit: int, offset: int, user: User) -> None:
     return courses
 
 
-async def create_course(
-    course_info: CoursePostSchema, user: User
-) -> List[Dict[str, Any]]:
+async def create_course(course_info: CoursePostSchema, user: User) -> Dict[str, Any]:
     if not user.is_evaluator:
         raise HTTPException(status_code=401, detail="only evaluator can open course.")
     if course_info.end_term < course_info.start_term:
@@ -72,17 +70,17 @@ async def create_course(
         conn.execute(query)
         conn.commit()
 
-    course = await fetch_all(
+    course = await fetch_one(
         sa.select([col for col in Course.__table__.columns]).where(
             (Course.evaluator == user.id) & (Course.name == course_info.name)
         )
-    )[0]
+    )
     return course
 
 
 async def update_course(
     course_id: int, course_info: CoursePostSchema, user: User
-) -> List[Dict[str, Any]]:
+) -> Dict[str, Any]:
     if not user.is_evaluator:
         raise HTTPException(status_code=401, detail="only evaluator can open course.")
     if course_info.end_term < course_info.start_term:
@@ -121,11 +119,11 @@ async def update_course(
         conn.execute(query)
         conn.commit()
 
-    course = await fetch_all(
+    course = await fetch_one(
         sa.select([col for col in Course.__table__.columns]).where(
             (Course.evaluator == user.id) & (Course.name == course_info.name)
         )
-    )[0]
+    )
     return course
 
 
