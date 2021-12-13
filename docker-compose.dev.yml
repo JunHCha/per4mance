@@ -10,8 +10,8 @@ services:
       - ./secrets/.env.dev
     volumes:
       - .:/workspace
-      - python-packages:/usr/local/lib/python3.9.1/site-packages/
-      - python-bin:/usr/local/bin
+      - per4mance-packages:/usr/local/lib/python3.9/site-packages/
+      - per4mance-bin:/usr/local/bin
     networks:
       - db_network
     depends_on:
@@ -38,6 +38,6 @@ networks:
     driver: bridge
   
 volumes:
-  python-packages:
-  python-bin:
+  per4mance-packages:
+  per4mance-bin:
   db-volume:

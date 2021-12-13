@@ -9,7 +9,7 @@ db_session = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
 
 
 def init_views(app: FastAPI) -> None:
-    from per4mance import user, course
+    from per4mance import course, user
 
     @app.get("/ping")
     async def ping() -> str:
@@ -28,6 +28,3 @@ def create_app() -> FastAPI:
     init_views(app)
 
     return app
-
-
-app = create_app()
