@@ -1,17 +1,17 @@
-from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-
-from starlette.responses import JSONResponse
-from fastapi.routing import APIRouter
-from per4mance.user.schemas import SignUp
-from per4mance.user.services import create_account, refresh_token
-
 from fastapi.param_functions import Depends
+from fastapi.routing import APIRouter
+from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+from starlette.responses import JSONResponse
+
+from per4mance.core.utils.auth import refresh_token
+from per4mance.user.schemas import SignUp
+from per4mance.user.services import create_account
 
 router = APIRouter()
 
 
 @router.post("/users/signup")
-async def signup(signup_form: SignUp) -> JSONResponse:
+async def signup_view(signup_form: SignUp) -> JSONResponse:
     """
     Create account
     """
@@ -20,12 +20,11 @@ async def signup(signup_form: SignUp) -> JSONResponse:
 
 
 @router.post("/users/login")
-async def login(signin_form: OAuth2PasswordRequestForm = Depends()) -> JSONResponse:
+async def signin_view(
+    signin_form: OAuth2PasswordRequestForm = Depends(),
+) -> JSONResponse:
     """
     Get fresh token about requested user info.
     """
     token = await refresh_token(signin_form)
-    return JSONResponse(
-        status_code=200,
-        content=dict(access_token=token, token_type="bearer"),
-    )
+    return JSONResponse(status_code=200, content=token)
