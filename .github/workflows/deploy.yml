@@ -27,7 +27,7 @@ jobs:
         env:
           ECR_REGISTRY: 376119282775.dkr.ecr.ap-northeast-2.amazonaws.com
           ECR_REPOSITORY: per4mance-main-server
-          IMAGE_TAG: '$(date "+%Y%m%dT%H:%M:%S")'
         run: |
-          docker build . --file Dockerfile --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          export IMAGE_TAG=$(date "+%Y-%m-%d.%H%M")
+          docker build . --file Dockerfile.dev --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
